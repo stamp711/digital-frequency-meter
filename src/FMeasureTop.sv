@@ -8,7 +8,7 @@ module FMeasureTop (
 
     typedef enum bit[1:0] {
         Ready   = 2'b01,
-        Busy    = 2'b10
+        Store   = 2'b10
     } state_t;
 
     state_t state;
@@ -23,13 +23,13 @@ module FMeasureTop (
             state <= Ready;
             ca <= 0;
             cb <= 0;
-        end:
+        end
 
         else case(state)
             Ready:
-                if (start) state <= Busy;
+                if (start) state <= Store;
             
-            Busy:
+            Store:
                 if (safe) begin
                     ca <= a;
                     cb <= b;
@@ -41,6 +41,6 @@ module FMeasureTop (
     end
 
     //drives: busy
-    always_comb busy = (state == Busy);
+    always_comb busy = (state != Ready);
 
 endmodule
