@@ -17,9 +17,13 @@ module FMeasureTop (
 
     FMeasure worker(.*);
 
-    // drives: state
+    // drives: state, ca, cb
     always_ff @(posedge clk or negedge rst_n) begin
-        if (~rst_n) state <= Ready;
+        if (~rst_n) begin
+            state <= Ready;
+            ca <= 0;
+            cb <= 0;
+        end:
 
         else case(state)
             Ready:
