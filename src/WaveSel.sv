@@ -6,7 +6,7 @@ module WaveSel (
 
     assign FWave = A;
 
-    always_latch @(mode) begin
+    always_latch begin
         if (mode == 2'b01) TWave = ( A & (~B) );
         else TWave = A;
     end
