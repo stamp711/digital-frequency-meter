@@ -29,8 +29,8 @@ module Toplevel (
         .FWave, .TWave
     );
 
-    wire int Tval [1:10];
-    wire int Fval [1:2];
+    int Tval [1:10];
+    int Fval [1:2];
     SerialTop serial (
         .clk, .rst_n,
         .start( Cstart ),
