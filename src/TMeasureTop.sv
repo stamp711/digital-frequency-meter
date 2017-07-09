@@ -17,7 +17,7 @@ module TMeasureTop (
     state_t state;
     bit counter_start;
     
-    logic counter_busy [0:9];
+    wire [0:9] counter_busy;
     
     generate genvar i;
         for (i = 0; i < 10; i++) begin : generate_counters
@@ -61,7 +61,7 @@ module TMeasureTop (
             end
 
             WaitMeasure: begin
-                if (counter_busy == '0) begin
+                if (counter_busy == 10'b0) begin
                     state <= Ready;
                 end
             end
