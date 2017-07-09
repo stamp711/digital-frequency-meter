@@ -66,7 +66,7 @@ module SerialTop (
 
             /***** Transfer Magic *****/
             TxMagicPrep: begin
-                tx_word <= {16'b0, mode_reg, magic};
+                tx_word <= {22'b0, mode_reg, magic};
                 ByteCount <= 2;
                 state <= TxMagic;
             end
