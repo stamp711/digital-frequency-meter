@@ -39,7 +39,7 @@ module SerialTop (
     int  tx_word;
     reg  tx_start;
     TxTop txTop (
-        .clk, rst_n,
+        .clk, .rst_n,
         .start(tx_start), .busy(tx_busy),
         .TxD, .word(tx_word), .bytes(ByteCount)
     );
