@@ -20,7 +20,7 @@ module TMeasureTop (
     logic counter_busy [0:9];
     
     generate genvar i;
-        for (i = 0; i < 10; i++) begin
+        for (i = 0; i < 10; i++) begin : generate_counters
             Counter worker(
                 .clk( clk[i] ),
                 .rst_n, .wave,
