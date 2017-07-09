@@ -22,7 +22,10 @@ module TxTop (
     bit  [2:0] bytes_count;
     int  word_reg;
     wire tx_busy, tx_start;
-    byte txbyte = word_reg[7:0];
+    byte txbyte;
+
+    assign txbyte = word_reg[7:0];
+    
     Transmitter tx(.clk, .rst_n, .start(tx_start), .data(txbyte), .TxD, .busy(tx_busy));
 
     // drives: state, word_reg, bytes_count, tx_start
