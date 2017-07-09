@@ -6,7 +6,7 @@ module Transmitter (
 );
 
     wire tick;
-    BaudGenerator bg(.clk, rst_n, tick);
+    BaudGenerator bg(.clk, rst_n, .tick);
 
     typedef enum bit[3:0] {
         Ready  = 4'b0000,
