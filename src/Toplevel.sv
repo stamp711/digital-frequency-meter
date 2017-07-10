@@ -3,9 +3,12 @@ module Toplevel (
     input  clkgrp [0:4],
     input  A, B,
     input  [1:0] opcode,
-    output ready,
+    output [3:0] state,
     output TxD
 );
+
+    wire ready;
+    assign state = ready ? 4'b0 : controller.state[4:1];
 
     wire Fbusy,  Tbusy,  Cbusy;
     wire Fstart, Tstart, Cstart;
