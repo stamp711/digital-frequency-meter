@@ -2,7 +2,7 @@ module Top (
     input  clk_50m, rst_n,
     input  A, B,
     input  [1:0] opcode,
-    output [3:0] state,,
+    output [3:0] state,
     output TxD
 );
 
