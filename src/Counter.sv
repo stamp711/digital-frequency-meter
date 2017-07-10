@@ -4,10 +4,11 @@ module Counter (
     output busy,
     output int val
 );
-    typedef enum bit[2:0] {
-        Ready = 3'b001,
-        Wait  = 3'b010,
-        Count = 3'b100
+    typedef enum bit[3:0] {
+        Ready    = 4'b0001,
+        WaitLow  = 4'b0010,
+        WaitHigh = 4'b0100,
+        Count    = 4'b1000
     } state_t;
     state_t state;
 
@@ -25,10 +26,13 @@ module Counter (
             Ready:
                 if (start) begin
                     val <= 0;
-                    state <= Wait;
+                    state <= WaitLow;
                 end
 
-            Wait:
+            WaitLow:
+                if (~wave) state <= WaitHigh;
+
+            WaitHigh:
                 if (wave) state <= Count;
             
             Count: begin
