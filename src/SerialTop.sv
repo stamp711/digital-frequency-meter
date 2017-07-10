@@ -3,7 +3,7 @@ module SerialTop (
     input  start,
     output busy,
     input  [1:0] mode,
-    input  int Tval [1:10],
+    input  int Tval [1:5],
     input  int Fval [1:2],
     output TxD
 );
@@ -32,7 +32,7 @@ module SerialTop (
 
     bit [1:0] mode_reg;
     bit [1:0] FWordCount;   // max 2
-    bit [3:0] TWordCount;   // max 10
+    bit [2:0] TWordCount;   // max 5
     bit [2:0] ByteCount;    // max 4
 
     wire tx_busy;
@@ -59,8 +59,8 @@ module SerialTop (
             end
 
             SetPara: begin
-                FWordCount <= mode_reg[1] ?  2 : 0;
-                TWordCount <= mode_reg[0] ? 10 : 0;
+                FWordCount <= mode_reg[1] ? 2 : 0;
+                TWordCount <= mode_reg[0] ? 5 : 0;
                 state <= TxMagicPrep;
             end
 
