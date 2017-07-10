@@ -1,9 +1,10 @@
 module TMeasureTop (
-    input  clk [0:9], rst_n,
+    input  clk, rst_n,
+    input  clkgrp [0:4],
     input  wave,
     input  start,
     output busy,
-    output int val [0:9]
+    output int val [0:4]
 );
 
     typedef enum bit[4:0] {
@@ -17,12 +18,12 @@ module TMeasureTop (
     state_t state;
     bit counter_start;
     
-    wire [0:9] counter_busy;
+    wire [4:0] counter_busy;
     
     generate genvar i;
-        for (i = 0; i < 10; i++) begin : generate_counters
+        for (i = 0; i < 5; i++) begin : generate_counters
             Counter worker(
-                .clk( clk[i] ),
+                .clk( clkgrp[i] ),
                 .rst_n, .wave,
                 .start( counter_start ),
                 .busy( counter_busy[i] ),
@@ -35,7 +36,7 @@ module TMeasureTop (
     always_comb busy = (state != Ready);
 
     // drives: state, counter_start
-    always_ff @(posedge clk[0] or negedge rst_n) begin
+    always_ff @(posedge clk or negedge rst_n) begin
         if (~rst_n) begin
             state <= Ready;
             counter_start <= 0;
@@ -61,7 +62,7 @@ module TMeasureTop (
             end
 
             WaitMeasure: begin
-                if (counter_busy == 10'b0) begin
+                if (counter_busy == 5'b0) begin
                     state <= Ready;
                 end
             end
