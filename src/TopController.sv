@@ -8,11 +8,11 @@ module TopController (
 );
     
     typedef enum bit[4:0] {
-        Ready,
-        StartMeasure,
-        WaitMeasure,
-        StartTx,
-        WaitTx
+        Ready        = 5'b00001,
+        StartMeasure = 5'b00010,
+        WaitMeasure  = 5'b00100,
+        StartTx      = 5'b01000,
+        WaitTx       = 5'b10000
     } state_t;
     state_t state;
 
@@ -26,40 +26,10 @@ module TopController (
     // drives: ready
     always_comb ready = (state == Ready);
 
-    // drives: state
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (~rst_n) state <= Ready;
-
-        else case(state)
-            
-            Ready: begin
-                if (opcode != None) state <= StartMeasure;
-            end
-
-            StartMeasure: begin
-                if ({Fbusy, Tbusy} == mode) state <= WaitMeasure;
-            end
-
-            WaitMeasure: begin
-                if ({Fbusy, Tbusy} == 2'b00) state <= StartTx;
-            end
-
-            StartTx: begin
-                if (Cbusy == 1) state <= WaitTx;
-            end
-
-            WaitTx: begin
-                if (Cbusy == 0) state <= Ready;
-            end
-
-            default:
-                state <= Ready;
-        endcase
-    end
-
-    // drives: Xstart, mode
+    // drives: state, Xstart, mode
     always_ff @(posedge clk or negedge rst_n) begin
         if (~rst_n) begin
+            state <= Ready;
             {Fstart, Tstart, Cstart} <= 0;
             mode <= None;
         end
@@ -69,31 +39,31 @@ module TopController (
             Ready: begin
                 {Fstart, Tstart, Cstart} <= 0;
                 mode <= opcode;
+                if (opcode != None) state <= StartMeasure;
             end
 
             StartMeasure: begin
                 {Fstart, Tstart} <= mode;
-                Cstart <= 0;
-                mode <= mode;
+                if ({Fbusy, Tbusy} != 2'b00) state <= WaitMeasure;
             end
 
             WaitMeasure: begin
-                {Fstart, Tstart, Cstart} <= 0;
-                mode <= mode;
+                {Fstart, Tstart} <= 2'b00;
+                if ({Fbusy, Tbusy} == 2'b00) state <= StartTx;
             end
 
             StartTx: begin
-                {Fstart, Tstart} <= 0;
                 Cstart <= 1;
-                mode <= mode;
+                if (Cbusy == 1) state <= WaitTx;
             end
 
             WaitTx: begin
-                {Fstart, Tstart, Cstart} <= 0;
-                mode <= mode;
+                Cstart <= 0;
+                if (Cbusy == 0) state <= Ready;
             end
 
             default: begin
+                state <= Ready;
                 {Fstart, Tstart, Cstart} <= 0;
                 mode <= None;
             end

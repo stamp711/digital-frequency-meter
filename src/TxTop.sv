@@ -7,12 +7,11 @@ module TxTop (
     input  [2:0] bytes
 );
 
-    typedef enum bit [5:0] {
+    typedef enum bit [4:0] {
         Ready,
         CheckZero,
         RiseStart,
         DropStart,
-        CountDec,
         WaitTx
     } state_t;
 
@@ -52,16 +51,16 @@ module TxTop (
 
             DropStart: if (tx_busy) begin
                 tx_start <= 0;
-                state <= CountDec;
-            end
-
-            CountDec: begin
-                bytes_count <= bytes_count - 1;
-                word_reg <= word_reg >> 8;
                 state <= WaitTx;
             end
 
-            WaitTx: if (!tx_busy) state <= CheckZero;
+            WaitTx: begin
+                if (!tx_busy) begin
+                    bytes_count <= bytes_count - 1;
+                    word_reg <= word_reg >> 8;
+                    state <= CheckZero;
+                end
+            end
 
             default: state <= Ready;
         endcase
