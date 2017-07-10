@@ -1,13 +1,11 @@
 module Toplevel (
-    input  clkgrp [0:9], rst_n,
+    input  clk, rst_n,
+    input  clkgrp [0:4],
     input  A, B,
     input  [1:0] opcode,
     output ready,
     output TxD
 );
-
-    wire clk;
-    assign clk = clkgrp[0];
 
     wire Fbusy,  Tbusy,  Cbusy;
     wire Fstart, Tstart, Cstart;
@@ -29,7 +27,7 @@ module Toplevel (
         .FWave, .TWave
     );
 
-    int Tval [1:10];
+    int Tval [1:5];
     int Fval [1:2];
     SerialTop serial (
         .clk, .rst_n,
@@ -50,8 +48,9 @@ module Toplevel (
     );
 
     TMeasureTop tm (
-        .clk( clkgrp ),
+        .clk,
         .rst_n,
+        .clkgrp,
         .wave( TWave ),
         .start( Tstart ),
         .busy( Tbusy ),
