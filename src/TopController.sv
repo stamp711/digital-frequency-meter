@@ -4,9 +4,11 @@ module TopController (
     output Fstart, Tstart, Cstart,
     input  [1:0] opcode,
     output ready,
+    output [3:0] out_state,
     output [1:0] mode
 );
-    
+
+    assign out_state = state[4:1];
     typedef enum bit[4:0] {
         Ready        = 5'b00001,
         StartMeasure = 5'b00010,

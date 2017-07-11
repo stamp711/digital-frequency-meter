@@ -7,9 +7,6 @@ module Toplevel (
     output TxD
 );
 
-    wire ready;
-    assign state = ready ? 4'b0 : controller.state[4:1];
-
     wire Fbusy,  Tbusy,  Cbusy;
     wire Fstart, Tstart, Cstart;
     wire [1:0] mode;
@@ -19,7 +16,8 @@ module Toplevel (
         .Fbusy,  .Tbusy,  .Cbusy,
         .Fstart, .Tstart, .Cstart,
         .opcode,
-        .ready,
+        .ready(),
+        .out_state(state),
         .mode
     );
 
@@ -57,6 +55,7 @@ module Toplevel (
         .wave( TWave ),
         .start( Tstart ),
         .busy( Tbusy ),
+        .out_state(),
         .val( Tval )
     );
 

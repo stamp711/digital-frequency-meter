@@ -4,15 +4,19 @@ module TMeasureTop (
     input  wave,
     input  start,
     output busy,
+    output [3:0] out_state,
     output int val [0:4]
 );
 
-    typedef enum bit[4:0] {
-        Ready         = 5'b00001,
-        RiseStart0    = 5'b00010,
-        RiseStart1    = 5'b00100,
-        DropStart     = 5'b01000,
-        WaitMeasure   = 5'b10000
+    assign out_state =  state[4:1];
+
+    typedef enum bit[5:0] {
+        Ready,
+        RiseStart0,
+        RiseStart1,
+        DropStart,
+        WaitMeasure0,
+        WaitMeasure1
     } state_t;
 
     state_t state;
@@ -58,10 +62,16 @@ module TMeasureTop (
 
             DropStart: begin
                 counter_start <= 0;
-                state <= WaitMeasure;
+                state <= WaitMeasure0;
             end
 
-            WaitMeasure: begin
+            WaitMeasure0: begin
+                if (counter_busy == 5'b0) begin
+                    state <= WaitMeasure1;
+                end
+            end
+
+            WaitMeasure1: begin
                 if (counter_busy == 5'b0) begin
                     state <= Ready;
                 end

@@ -1,6 +1,6 @@
 module ModeSel (
     input  clk, rst_n,
-    input  btn [2:0],
+    input  [2:0] btn,
     output [1:0] mode
 );
 
@@ -12,7 +12,7 @@ module ModeSel (
             btn[1]: mode <= 2'b01;
             btn[2]: mode <= 2'b11;
             
-            default: mode <= 2'b10;
+            default: mode <= mode;
         endcase
     end
 
